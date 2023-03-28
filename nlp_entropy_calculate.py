@@ -23,11 +23,11 @@ def read_txt(path):
 
 def txt_process(txt):
     # 去掉停词表中的词语
-    with open('./cn_stopwords.txt', 'r', encoding='utf-8') as f:  # 停词表
+    # # with open('./cn_stopwords.txt', 'r', encoding='utf-8') as f:  # 停词表
     # with open('./cn_punctuation.txt', 'r', encoding='utf-8') as f:  # 仅删除标点符号
-        stopwords = [line.strip() for line in f.readlines()]
-        stopwords.append(' ')
-    # stopwords = []  # 考虑全文
+    #     stopwords = [line.strip() for line in f.readlines()]
+    #     stopwords.append(' ')
+    stopwords = []  # 考虑全文
     output = []
     for i in range(len(txt)):
         txt[i] = re.sub(r'[a-zA-Z0-9=]+', '', txt[i])  # 处理文中的英文及数字
@@ -36,9 +36,24 @@ def txt_process(txt):
                 output.append(word)
     # with open("stop_text.txt", "w", encoding="utf-8") as f:
     # with open("puc_deleted.txt", "w", encoding="utf-8") as f:
-        # for i in output:
-        #     f.write(i)
+    with open("full_text.txt", "w", encoding="utf-8") as f:
+        for i in output:
+            f.write(i)
     return output
+
+
+def one_word(file):
+    with open(file, 'r', encoding='utf-8') as f:
+        content = f.read()
+        word_list = [word for word in content]
+    token_num = len(word_list)
+    counter = Counter(word_list)
+    words_table = counter.most_common()
+    entropy_1gram = sum([-(i[1] / token_num) * math.log((i[1] / token_num), 2) for i in words_table])
+    print("词库总词数：", token_num, " ", "不同词的个数：", len(words_table))
+    print("出现频率前10的1-gram词语：", words_table[:10])
+    print("entropy_1gram:", entropy_1gram)
+
 
 
 def one_gram(token):
@@ -108,6 +123,9 @@ txt_path = './jyxstxtqj_downcc.com'
 txt_data, files = read_txt(txt_path)
 token_list = txt_process(txt_data)
 
+one_word('./stop_text.txt')
+one_word('./puc_deleted.txt')
+one_word('./full_text.txt')
 one_gram(token_list)
 bigram(token_list)
 trigram(token_list)
