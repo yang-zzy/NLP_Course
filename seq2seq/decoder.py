@@ -78,6 +78,6 @@ class NumDecoder(nn.Module):
         decoder_indices = []
         for i in range(decoder_outputs.size(1)):
             value, indices = torch.topk(decoder_outputs[:, i, :], 3)
-            decoder_indices.append(int(indices[0][random.randint(0, 2)].data))
+            decoder_indices.append(int(indices[0][0].data))
         # print(decoder_indices)
         return decoder_indices
